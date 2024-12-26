@@ -33,36 +33,6 @@ AniLens is a modern web application for tracking, organizing, and rating anime a
 - Entity Framework Core
 - MongoDB/MariaDB (we'll see...)
 
-## Getting Started
-
-### Prerequisites
-- .NET 8 SDK
-- SQL Server
-- Node.js (for development tools)
-
-### Installation
-1. Clone the repository
-```
-git clone https://github.com/yourusername/anilens.git
-```
-
-2. Navigate to the project directory
-```
-cd anilens
-```
-
-3. Install dependencies
-```
-dotnet restore
-```
-
-4. Configure the database connection in `appsettings.json`
-
-5. Run the application
-```
-dotnet run
-```
-
 ## Project Structure
 
 ```
