@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{487F7FEF-39B2-4191-93E9-3E99A7D66761}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniLens.Client", "src\AniLens.Client\AniLens.Client.csproj", "{98E3B687-8743-446D-B1BE-776DD63B16ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniLens.Server", "src\AniLens.Server\AniLens.Server.csproj", "{0218E444-4F1A-4F6E-AFFE-B565A66EBC16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniLens.Core", "src\AniLens.Core\AniLens.Core.csproj", "{6ABD42D3-FDED-4439-8B70-F4DA339B5689}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniLens.Shared", "src\AniLens.Shared\AniLens.Shared.csproj", "{4695DD44-C981-40EF-A61C-36E5F3C44DEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98E3B687-8743-446D-B1BE-776DD63B16ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98E3B687-8743-446D-B1BE-776DD63B16ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98E3B687-8743-446D-B1BE-776DD63B16ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98E3B687-8743-446D-B1BE-776DD63B16ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0218E444-4F1A-4F6E-AFFE-B565A66EBC16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0218E444-4F1A-4F6E-AFFE-B565A66EBC16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0218E444-4F1A-4F6E-AFFE-B565A66EBC16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0218E444-4F1A-4F6E-AFFE-B565A66EBC16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ABD42D3-FDED-4439-8B70-F4DA339B5689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ABD42D3-FDED-4439-8B70-F4DA339B5689}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ABD42D3-FDED-4439-8B70-F4DA339B5689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ABD42D3-FDED-4439-8B70-F4DA339B5689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4695DD44-C981-40EF-A61C-36E5F3C44DEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4695DD44-C981-40EF-A61C-36E5F3C44DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4695DD44-C981-40EF-A61C-36E5F3C44DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4695DD44-C981-40EF-A61C-36E5F3C44DEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{98E3B687-8743-446D-B1BE-776DD63B16ED} = {487F7FEF-39B2-4191-93E9-3E99A7D66761}
+		{0218E444-4F1A-4F6E-AFFE-B565A66EBC16} = {487F7FEF-39B2-4191-93E9-3E99A7D66761}
+		{6ABD42D3-FDED-4439-8B70-F4DA339B5689} = {487F7FEF-39B2-4191-93E9-3E99A7D66761}
+		{4695DD44-C981-40EF-A61C-36E5F3C44DEA} = {487F7FEF-39B2-4191-93E9-3E99A7D66761}
+	EndGlobalSection
+EndGlobal
