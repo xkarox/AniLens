@@ -1,8 +1,9 @@
 namespace AniLens.Shared;
+using static Error;
 
 public class Result<T>
 {
-    private Result(T? data, bool isSuccess, string error = "", int errorType = 0)
+    private Result(T? data, bool isSuccess, string error = "", Error errorType = Default)
     {
         Data = data;
         IsSuccess = isSuccess;
@@ -14,11 +15,11 @@ public class Result<T>
     public bool IsSuccess { get; private set; }
     public bool IsFailure => !IsSuccess;
     public string Error { get; private set; }
-    public int ErrorType { get; private set; }
+    public Error ErrorType { get; private set; }
 
     public static Result<T> Success(T data) => new(data, true);
     public static Result<NoData> Success() => new(new NoData(), true);
-    public static Result<T> Failure(string error, int errorType = 0) => new(default, false, error, errorType);
+    public static Result<T> Failure(string error, Error errorType = Default) => new(default, false, error, errorType);
 }
 
 
