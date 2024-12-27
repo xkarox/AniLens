@@ -13,6 +13,10 @@ public enum Error
     Internal = 2,
     [Description("Parameter error")]
     Parameter = 3,
+    [Description("UNathorized action")]
+    Unauthorized = 4,
+    [Description("Invalid credentials provided")]
+    InvalidCredentials = 5
 }
 
 public static class ErrorExtensions

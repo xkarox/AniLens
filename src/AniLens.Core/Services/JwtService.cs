@@ -18,7 +18,7 @@ public class JwtService : IJwtService
     private readonly TokenValidationParameters _validationParameters;
     private readonly IUserService _userService;
     
-    public JwtService(IConfiguration configuration, IUserService userService)
+    public JwtService(IConfiguration configuration, UserService userService)
     {
         _configuration = configuration;
         _tokenHandler = new JwtSecurityTokenHandler();

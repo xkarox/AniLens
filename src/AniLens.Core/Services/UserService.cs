@@ -62,6 +62,32 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<Result<User>> GetByName(string username)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return Result<User>.Failure("No username provided",
+                    Error.Parameter);
+            }
+
+            var filter =
+                Builders<User>.Filter.Eq(user => user.Username, username);
+            var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
+
+            return user != null
+                ? Result<User>.Success(user)
+                : Result<User>.Failure(
+                    $"User with Username {username} not found",
+                    Error.NotFound);
+        }
+        catch
+        {
+            return Result<User>.Failure(Error.Internal.ToDescriptionString(),
+                Error.Internal);
+        }
+    }
     public async Task<Result<UserDto>> AddUser(UserDto user)
     {
         try

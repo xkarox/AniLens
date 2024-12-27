@@ -1,4 +1,5 @@
 
+using AniLens.Core.Interfaces;
 using AniLens.Core.Services;
 using AniLens.Server.Settings;
 
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<UserDbSettings>(builder.Configuration.GetSection("MongoDBUser"));
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddControllers();
 
 
