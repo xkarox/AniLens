@@ -1,11 +1,14 @@
+using System.Diagnostics;
+using AniLens.Core.Extensions;
 using AniLens.Core.Interfaces;
 using AniLens.Core.Models;
 using AniLens.Server.Settings;
 using AniLens.Shared;
+using AniLens.Shared.DTO;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace AniLens.Server.Services;
+namespace AniLens.Core.Services;
 
 public class UserService : IUserService
 {
@@ -13,7 +16,7 @@ public class UserService : IUserService
     
     public UserService(IOptions<UserDbSettings> userDbSettings)
     {
-        ArgumentNullException.ThrowIfNull(userDbSettings);
+        Debug.Assert(userDbSettings != null, nameof(userDbSettings) + " != null");
         var mongoSettings = userDbSettings.Value;
         var client = new MongoClient(mongoSettings.ConnectionUri);
         var database = client.GetDatabase(mongoSettings.DatabaseName);
@@ -21,54 +24,58 @@ public class UserService : IUserService
             .CollectionName);
     }
 
-    public async Task<Result<IEnumerable<User>>> GetAll()
+    public async Task<Result<IEnumerable<UserDto>>> GetAll()
     {
         try
         {
             var users = await _userCollection.Find(_ => true)
                 .ToListAsync();
-            return Result<IEnumerable<User>>.Success(users);
+            return Result<IEnumerable<UserDto>>.Success(users.ToDto());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<User>>.Failure(
+            return Result<IEnumerable<UserDto>>.Failure(
                 $"Failed to retrieve users: {ex.Message}", Error.Internal);
         }
     }
 
-    public async Task<Result<User>> Get(string id)
+    public async Task<Result<UserDto>> Get(string id)
     {
         try
         {
             if (string.IsNullOrEmpty(id))
-                return Result<User>.Failure("Invalid user ID", 
+                return Result<UserDto>.Failure("Invalid user ID", 
                     Error.Parameter);
 
             var filter = Builders<User>.Filter.Eq(user => user.Id, id);
             var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
             
             return user != null
-                ? Result<User>.Success(user)
-                : Result<User>.Failure($"User with ID {id} not found", 
+                ? Result<UserDto>.Success(user.ToDto())
+                : Result<UserDto>.Failure($"User with ID {id} not found", 
                     Error.NotFound);
         }
         catch (Exception ex)
         {
-            return Result<User>.Failure($"Failed to retrieve user: {ex.Message}", 
+            return Result<UserDto>.Failure($"Failed to retrieve user: {ex.Message}", 
                 Error.Internal);
         }
     }
 
-    public async Task<Result<NoData>> AddUser(User user)
+    public async Task<Result<UserDto>> AddUser(UserDto user)
     {
         try
         {
-            await _userCollection.InsertOneAsync(user);
-            return Result<NoData>.Success();
+            var userModel = user.ToUser();
+            userModel.Id = null;
+            userModel.CreatedAt = DateTime.UtcNow;
+            userModel.UpdatedAt = DateTime.UtcNow;
+            await _userCollection.InsertOneAsync(userModel);
+            return Result<UserDto>.Success(userModel.ToDto());
         }
         catch (Exception ex)
         {
-            return Result<NoData>.Failure($"Failed to add user: {ex.Message}", 
+            return Result<UserDto>.Failure($"Failed to add user: {ex.Message}", 
                 Error.Internal);
         }
     }
@@ -96,25 +103,36 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<Result<User>> UpdateUser(User user)
+    public async Task<Result<UserDto>> UpdateUser(string id, UpdateUserDto user)
     {
         try
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Id, user.Id);
-            var result = await _userCollection.ReplaceOneAsync(filter, user);
+            var foundUser = await _userCollection.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (foundUser == null)
+                return Result<UserDto>.Failure($"User with ID {id} not found", Error.NotFound);
+            
+            if (!string.IsNullOrEmpty(user.Username))
+                foundUser.Username = user.Username;
+            if (!string.IsNullOrEmpty(user.Email))
+                foundUser.Email = user.Email;
+        
+            foundUser.UpdatedAt = DateTime.UtcNow;
+            
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var result = await _userCollection.ReplaceOneAsync(filter, foundUser);
             
             if (!result.IsAcknowledged)
-                return Result<User>.Failure("Database operation not acknowledged", 
+                return Result<UserDto>.Failure("Database operation not acknowledged", 
                     Error.Internal);
             
             return result.ModifiedCount > 0
-                ? Result<User>.Success(user)
-                : Result<User>.Failure($"User with ID {user.Id} not found", 
+                ? Result<UserDto>.Success(foundUser.ToDto())
+                : Result<UserDto>.Failure($"User with ID {foundUser.Id} not found", 
                     Error.NotFound);
         }
         catch (Exception ex)
         {
-            return Result<User>.Failure($"Failed to update user: {ex.Message}",
+            return Result<UserDto>.Failure($"Failed to update user: {ex.Message}",
                 Error.Internal);
         }
     }

@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace AniLens.Server.Settings;
+namespace AniLens.Core.Settings;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public abstract class MongoDbSettingsBase

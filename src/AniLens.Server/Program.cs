@@ -1,4 +1,5 @@
-using AniLens.Server.Services;
+
+using AniLens.Core.Services;
 using AniLens.Server.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
