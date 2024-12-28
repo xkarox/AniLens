@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using AniLens.Core.Extensions;
 using AniLens.Core.Interfaces;
 using AniLens.Core.Services;
@@ -37,7 +38,23 @@ public class AuthController(JwtService jwtService, UserService userService) : Co
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
     {
-        throw new NotImplementedException();
+        var result = await userService.AddUser(registerDto);
+        if (result.IsSuccess)
+        {
+            var tokenGenResult =
+                jwtService.GenerateToken(
+                    result.Data!.ToLogin(registerDto.Password));
+
+            if (tokenGenResult.IsSuccess)
+            {
+                tokenGenResult.Data!.User = result.Data!;
+                return Ok(tokenGenResult.Data);
+            }
+            
+            return StatusCode(500, Error.Internal.ToDescriptionString());
+        }
+
+        return BadRequest(Error.Parameter);
     }
 
     [HttpPost("refresh-token")]

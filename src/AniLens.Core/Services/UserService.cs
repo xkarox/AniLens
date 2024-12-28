@@ -105,6 +105,21 @@ public class UserService : IUserService
                 Error.Internal);
         }
     }
+    
+    public async Task<Result<UserDto>> AddUser(RegisterDto user)
+    {
+        try
+        {
+            var userModel = user.ToUser();
+            await _userCollection.InsertOneAsync(userModel);
+            return Result<UserDto>.Success(userModel.ToDto());
+        }
+        catch (Exception ex)
+        {
+            return Result<UserDto>.Failure($"Failed to add user: {ex.Message}", 
+                Error.Internal);
+        }
+    }
 
     public async Task<Result<NoData>> DeleteUser(string id)
     {
