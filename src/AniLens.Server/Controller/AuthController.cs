@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.JavaScript;
+using System.Security.Claims;
 using AniLens.Core.Extensions;
 using AniLens.Core.Interfaces;
 using AniLens.Core.Services;
@@ -12,6 +13,7 @@ namespace AniLens.Server.Controller;
 [Route("api/[controller]")]
 public class AuthController(JwtService jwtService, UserService userService) : ControllerBase
 {
+    // create new class AuthenticationHelper and break the endpoints apart 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponseDto>> Login(LoginDto loginDto)
     {
@@ -60,6 +62,21 @@ public class AuthController(JwtService jwtService, UserService userService) : Co
     [HttpPost("refresh-token")]
     public async Task<ActionResult<AuthResponseDto>> RefreshToken()
     {
-        throw new NotImplementedException();
+        var token = Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+        var validationResult = jwtService.ValidateToken(token);
+        if (validationResult.IsSuccess)
+        {
+            var claimsPrincipal = validationResult.Data;
+            if (claimsPrincipal != null)
+            {
+                var username = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
+                var user = await userService.GetByName(username!.Value);
+                if (user.IsSuccess)
+                {
+                    // generate a new token 
+                }
+            }
+        } 
+
     }
 }
