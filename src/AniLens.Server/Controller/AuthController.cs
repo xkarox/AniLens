@@ -5,13 +5,16 @@ using AniLens.Core.Interfaces;
 using AniLens.Core.Services;
 using AniLens.Shared;
 using AniLens.Shared.DTO;
+using DevOne.Security.Cryptography.BCrypt;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AniLens.Server.Controller;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IJwtService jwtService, IUserService userService) : ControllerBase
+public class AuthController(IJwtService jwtService, 
+    IUserService userService,
+    IHashService hashService) : ControllerBase
 {
     [HttpPost("login")]
     [Consumes("application/json")]
@@ -26,7 +29,7 @@ public class AuthController(IJwtService jwtService, IUserService userService) : 
             return BadRequest(Error.InvalidCredentials.ToDescriptionString());
 
         var user = userFetchResult.Data!;
-        if (user.PasswordHash != loginDto.Password)
+        if(!hashService.CheckPassword(loginDto.Password, user.PasswordHash!))
             return Unauthorized(Error.InvalidCredentials.ToDescriptionString());
 
         loginDto.Roles = user.Roles ?? [];
@@ -53,6 +56,12 @@ public class AuthController(IJwtService jwtService, IUserService userService) : 
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
     {
+        var hashPasswordResult = hashService.HashPassword(registerDto.Password);
+        if (hashPasswordResult.IsFailure)
+            return StatusCode(500, Error.Internal.ToDescriptionString());
+
+        registerDto.Password = hashPasswordResult.Data!;
+        
         var userFetchResult = await userService.AddUser(registerDto);
         if (userFetchResult.IsFailure)
         {

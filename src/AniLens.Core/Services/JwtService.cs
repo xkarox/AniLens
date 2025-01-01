@@ -55,12 +55,9 @@ public class JwtService : IJwtService
                 new Claim(JwtRegisteredClaimNames.Jti,
                     Guid.NewGuid().ToString())
             };
-
-            // Add roles to claims
-            foreach (var role in user.Roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
-            }
+            
+            claims.AddRange(user.Roles.Select(
+                role => new Claim(ClaimTypes.Role, role.ToString())));
 
             var expiration = DateTime.UtcNow.AddMinutes(
                 Convert.ToInt32(
