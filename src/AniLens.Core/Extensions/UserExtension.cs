@@ -20,11 +20,17 @@ public static class UserExtension
             UpdatedAt = user.UpdatedAt
         };
     }
-
     public static IEnumerable<UserDto> ToDto(this IEnumerable<User> users)
     {
         ArgumentNullException.ThrowIfNull(users);
 
         return users.Select(user => user.ToDto());
+    }
+
+    public static LoginDto ToLogin(this User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+
+        return user.ToDto().ToLogin(user.PasswordHash!);
     }
 }

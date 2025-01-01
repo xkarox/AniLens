@@ -11,8 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<UserDbSettings>(builder.Configuration.GetSection("MongoDBUser"));
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddControllers();
 
 
