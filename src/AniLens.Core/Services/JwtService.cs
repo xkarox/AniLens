@@ -24,8 +24,12 @@ public class JwtService : IJwtService
         _tokenHandler = new JwtSecurityTokenHandler();
         _userService = userService;
         
+        var secretKey = _configuration["JwtSettings:SecretKey"];
+        if (string.IsNullOrEmpty(secretKey) || Encoding.UTF8.GetBytes(secretKey).Length < 32)
+               throw new ArgumentException("JWT secret key must be at least 32 bytes");
+        
         var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
+            Encoding.UTF8.GetBytes(secretKey));
             
         _validationParameters = new TokenValidationParameters
         {
