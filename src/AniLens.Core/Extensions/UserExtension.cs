@@ -30,7 +30,7 @@ public static class UserExtension
     public static LoginDto ToLogin(this User user)
     {
         ArgumentNullException.ThrowIfNull(user);
-
-        return user.ToDto().ToLogin(user.PasswordHash!);
+        
+        return user.ToDto().ToLogin(user.PasswordHash ?? "");
     }
 }

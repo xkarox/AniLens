@@ -25,11 +25,10 @@ public class JwtService : IJwtService
         _userService = userService;
         
         var secretKey = _configuration["JwtSettings:SecretKey"];
-        if (string.IsNullOrEmpty(secretKey) || Encoding.UTF8.GetBytes(secretKey).Length < 32)
-               throw new ArgumentException("JWT secret key must be at least 32 bytes");
-        
+
+        var credentials = GetSigningCredentials();
         var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(secretKey));
+            Encoding.UTF8.GetBytes(credentials.Key.ToString()));
             
         _validationParameters = new TokenValidationParameters
         {
@@ -47,11 +46,7 @@ public class JwtService : IJwtService
     {
         try
         {
-            var securityKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    _configuration["JwtSettings:SecretKey"]!));
-            var credentials = new SigningCredentials(securityKey,
-                SecurityAlgorithms.HmacSha256);
+            var credentials = GetSigningCredentials();
 
             var claims = new List<Claim>
             {
@@ -122,5 +117,17 @@ public class JwtService : IJwtService
         {
             return Result<ClaimsPrincipal>.Failure($"Token validation failed: {ex.Message}", Error.Unauthorized);
         }
+    }
+    
+    private SigningCredentials GetSigningCredentials()
+    {
+        var secretKey = _configuration["JwtSettings:SecretKey"] 
+                ?? throw new InvalidOperationException("JWT secret key not configured");
+        
+        if (string.IsNullOrEmpty(secretKey) || Encoding.UTF8.GetBytes(secretKey).Length < 32)
+            throw new ArgumentException("JWT secret key must be at least 32 bytes");
+        
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        return new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
     }
 }
