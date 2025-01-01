@@ -16,19 +16,17 @@ public class JwtService : IJwtService
     private readonly IConfiguration _configuration;
     private readonly JwtSecurityTokenHandler _tokenHandler;
     private readonly TokenValidationParameters _validationParameters;
-    private readonly IUserService _userService;
+    private readonly int _expirationMinitues;
     
-    public JwtService(IConfiguration configuration, IUserService userService)
+    public JwtService(IConfiguration configuration)
     {
         _configuration = configuration;
         _tokenHandler = new JwtSecurityTokenHandler();
-        _userService = userService;
         
         var secretKey = _configuration["JwtSettings:SecretKey"];
 
-        var credentials = GetSigningCredentials();
-        var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(credentials.Key.ToString()));
+        var signingCredentials = GetSigningCredentials();
+        var securityKey = ((SymmetricSecurityKey)signingCredentials.Key);
             
         _validationParameters = new TokenValidationParameters
         {
@@ -39,8 +37,15 @@ public class JwtService : IJwtService
             ValidIssuer = _configuration["JwtSettings:Issuer"],
             ValidAudience = _configuration["JwtSettings:Audience"],
             IssuerSigningKey = securityKey,
-            ClockSkew = TimeSpan.Zero // Optional: removes the default 5 minute clock skew
+            ClockSkew = TimeSpan.Zero 
         };
+        
+        var expirationMinutes = _configuration["JwtSettings:ExpirationInMinutes"] 
+                ?? throw new InvalidOperationException("JWT expiration not configured");
+        if (!int.TryParse(expirationMinutes, out var minutes) || minutes <= 0)
+                throw new ArgumentException("Invalid JWT expiration time");
+
+        _expirationMinitues = minutes;
     }
     public Result<AuthResponseDto> GenerateToken(LoginDto user)
     {
@@ -58,9 +63,7 @@ public class JwtService : IJwtService
             claims.AddRange(user.Roles.Select(
                 role => new Claim(ClaimTypes.Role, role.ToString())));
 
-            var expiration = DateTime.UtcNow.AddMinutes(
-                Convert.ToInt32(
-                    _configuration["JwtSettings:ExpirationInMinutes"]));
+            var expiration = DateTime.UtcNow.AddMinutes(_expirationMinitues);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JwtSettings:Issuer"],
