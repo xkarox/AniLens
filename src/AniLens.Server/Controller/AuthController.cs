@@ -6,6 +6,7 @@ using AniLens.Core.Services;
 using AniLens.Shared;
 using AniLens.Shared.DTO;
 using DevOne.Security.Cryptography.BCrypt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AniLens.Server.Controller;
@@ -16,6 +17,7 @@ public class AuthController(IJwtService jwtService,
     IUserService userService,
     IHashService hashService) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("login")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
@@ -48,7 +50,7 @@ public class AuthController(IJwtService jwtService,
         return Ok(user.ToDto());
     }
 
-
+    [AllowAnonymous]
     [HttpPost("register")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
@@ -88,7 +90,8 @@ public class AuthController(IJwtService jwtService,
         return Ok(tokenGenResult.Data!.User);
 
     }
-
+    
+    
     [HttpPost("refresh-token")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

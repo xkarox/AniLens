@@ -22,8 +22,6 @@ public class JwtService : IJwtService
     {
         _configuration = configuration;
         _tokenHandler = new JwtSecurityTokenHandler();
-        
-        var secretKey = _configuration["JwtSettings:SecretKey"];
 
         var signingCredentials = GetSigningCredentials();
         var securityKey = ((SymmetricSecurityKey)signingCredentials.Key);
@@ -46,6 +44,8 @@ public class JwtService : IJwtService
                 throw new ArgumentException("Invalid JWT expiration time");
 
         _expirationMinitues = minutes;
+
+        
     }
     public Result<AuthResponseDto> GenerateToken(LoginDto user)
     {

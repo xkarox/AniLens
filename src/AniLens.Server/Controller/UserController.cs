@@ -5,7 +5,9 @@ using AniLens.Core.Services;
 using AniLens.Server.Controller.Base;
 using AniLens.Shared;
 using AniLens.Shared.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Extensions;
 
 namespace AniLens.Server.Controller;
 
@@ -13,6 +15,7 @@ namespace AniLens.Server.Controller;
 [ApiController]
 public class UserController(IUserService userService) : CrudController<UserDto, UpdateUserDto>
 {
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public override async Task<ActionResult<UserDto>> Get(string id)
@@ -23,6 +26,7 @@ public class UserController(IUserService userService) : CrudController<UserDto, 
             : NotFound(result.Error);
     }
     
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public override async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
@@ -33,6 +37,7 @@ public class UserController(IUserService userService) : CrudController<UserDto, 
             : StatusCode(StatusCodes.Status500InternalServerError, result.Error);
     }
     
+    [Authorize]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateUserDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -48,6 +53,7 @@ public class UserController(IUserService userService) : CrudController<UserDto, 
         };
     }
     
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -64,6 +70,7 @@ public class UserController(IUserService userService) : CrudController<UserDto, 
         };
     }
     
+    [Authorize(Roles = "Admin, Moderator")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
