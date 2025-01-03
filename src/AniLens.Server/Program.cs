@@ -9,7 +9,6 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.IdentityModel.Tokens;
-using SharpCompress.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
