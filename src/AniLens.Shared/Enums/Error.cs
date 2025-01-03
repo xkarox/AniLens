@@ -16,7 +16,9 @@ public enum Error
     [Description("Unauthorized action")]
     Unauthorized = 4,
     [Description("Invalid credentials provided")]
-    InvalidCredentials = 5
+    InvalidCredentials = 5,
+    [Description("Username is already taken")]
+    UserTaken = 6,
 }
 
 public static class ErrorExtensions

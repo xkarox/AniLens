@@ -3,6 +3,7 @@ using System.Security.Claims;
 using AniLens.Core.Extensions;
 using AniLens.Core.Interfaces;
 using AniLens.Core.Services;
+using AniLens.Server.Filter;
 using AniLens.Shared;
 using AniLens.Shared.DTO;
 using DevOne.Security.Cryptography.BCrypt;
@@ -51,6 +52,7 @@ public class AuthController(IJwtService jwtService,
     }
 
     [AllowAnonymous]
+    [ValidateRegisterDto]
     [HttpPost("register")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
@@ -58,6 +60,9 @@ public class AuthController(IJwtService jwtService,
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
     {
+        if (await userService.UsernameTaken(registerDto.Username))
+            return BadRequest(Error.UserTaken.ToDescriptionString());
+        
         var hashPasswordResult = hashService.HashPassword(registerDto.Password);
         if (hashPasswordResult.IsFailure)
             return StatusCode(500, Error.Internal.ToDescriptionString());

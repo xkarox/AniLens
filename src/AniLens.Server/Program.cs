@@ -3,6 +3,9 @@ using System.Text;
 using AniLens.Core.Interfaces;
 using AniLens.Core.Services;
 using AniLens.Server.Settings;
+using AniLens.Server.Validators;
+using AniLens.Shared.DTO;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.IdentityModel.Tokens;
@@ -58,6 +61,7 @@ builder.Services.Configure<UserDbSettings>(builder.Configuration.GetSection("Mon
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IHashService, HashService>();
+builder.Services.AddScoped<IValidator<RegisterDto>, RegistrationValidator>();
 
 builder.Services.AddControllers();
 

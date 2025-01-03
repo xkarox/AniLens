@@ -177,4 +177,10 @@ public class UserService : IUserService
                 Error.Internal);
         }
     }
+
+    public async Task<bool> UsernameTaken(string username)
+    {
+        var foundUser = await _userCollection.Find(u => u.Username == username).FirstOrDefaultAsync();
+        return foundUser != null;
+    }
 }
