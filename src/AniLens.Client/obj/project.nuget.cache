@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qf/nSUYJwpE=",
+  "dgSpecHash": "vvp8z4i8Rzo=",
   "success": true,
-  "projectFilePath": "/Users/xkroax/Coding/AniLense/src/AniLens.Client/AniLens.Client.csproj",
+  "projectFilePath": "/Users/xkroax/Coding/AniLens/src/AniLens.Client/AniLens.Client.csproj",
   "expectedPackageFiles": [
     "/Users/xkroax/.nuget/packages/microsoft.aspnetcore.authorization/8.0.11/microsoft.aspnetcore.authorization.8.0.11.nupkg.sha512",
     "/Users/xkroax/.nuget/packages/microsoft.aspnetcore.components/8.0.11/microsoft.aspnetcore.components.8.0.11.nupkg.sha512",

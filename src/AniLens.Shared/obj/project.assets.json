@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/AniLens.Shared.csproj",
+      "projectUniqueName": "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/AniLens.Shared.csproj",
       "projectName": "AniLens.Shared",
-      "projectPath": "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/AniLens.Shared.csproj",
+      "projectPath": "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/AniLens.Shared.csproj",
       "packagesPath": "/Users/xkroax/.nuget/packages/",
-      "outputPath": "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/obj/",
+      "outputPath": "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/xkroax/.nuget/NuGet/NuGet.Config"

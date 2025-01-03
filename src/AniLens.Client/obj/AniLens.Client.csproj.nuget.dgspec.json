@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/xkroax/Coding/AniLense/src/AniLens.Client/AniLens.Client.csproj": {}
+    "/Users/xkroax/Coding/AniLens/src/AniLens.Client/AniLens.Client.csproj": {}
   },
   "projects": {
-    "/Users/xkroax/Coding/AniLense/src/AniLens.Client/AniLens.Client.csproj": {
+    "/Users/xkroax/Coding/AniLens/src/AniLens.Client/AniLens.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/xkroax/Coding/AniLense/src/AniLens.Client/AniLens.Client.csproj",
+        "projectUniqueName": "/Users/xkroax/Coding/AniLens/src/AniLens.Client/AniLens.Client.csproj",
         "projectName": "AniLens.Client",
-        "projectPath": "/Users/xkroax/Coding/AniLense/src/AniLens.Client/AniLens.Client.csproj",
+        "projectPath": "/Users/xkroax/Coding/AniLens/src/AniLens.Client/AniLens.Client.csproj",
         "packagesPath": "/Users/xkroax/.nuget/packages/",
-        "outputPath": "/Users/xkroax/Coding/AniLense/src/AniLens.Client/obj/",
+        "outputPath": "/Users/xkroax/Coding/AniLens/src/AniLens.Client/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/xkroax/.nuget/NuGet/NuGet.Config"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/AniLens.Shared.csproj": {
-                "projectPath": "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/AniLens.Shared.csproj"
+              "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/AniLens.Shared.csproj": {
+                "projectPath": "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/AniLens.Shared.csproj"
               }
             }
           }
@@ -100,14 +100,14 @@
         }
       }
     },
-    "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/AniLens.Shared.csproj": {
+    "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/AniLens.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/AniLens.Shared.csproj",
+        "projectUniqueName": "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/AniLens.Shared.csproj",
         "projectName": "AniLens.Shared",
-        "projectPath": "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/AniLens.Shared.csproj",
+        "projectPath": "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/AniLens.Shared.csproj",
         "packagesPath": "/Users/xkroax/.nuget/packages/",
-        "outputPath": "/Users/xkroax/Coding/AniLense/src/AniLens.Shared/obj/",
+        "outputPath": "/Users/xkroax/Coding/AniLens/src/AniLens.Shared/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/xkroax/.nuget/NuGet/NuGet.Config"
