@@ -31,7 +31,7 @@ public class AuthController(IJwtService jwtService,
             return BadRequest(Error.InvalidCredentials.ToDescriptionString());
 
         var user = userFetchResult.Data!;
-        if(!hashService.CheckPassword(loginDto.Password, user.PasswordHash!))
+        if(hashService.CheckPassword(loginDto.Password, user.PasswordHash!))
             return Unauthorized(Error.InvalidCredentials.ToDescriptionString());
 
         loginDto.Roles = user.Roles ?? [];
@@ -91,7 +91,7 @@ public class AuthController(IJwtService jwtService,
 
     }
     
-    
+    [Authorize]
     [HttpPost("refresh-token")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -99,16 +99,7 @@ public class AuthController(IJwtService jwtService,
     public async Task<ActionResult<AuthResponseDto>> RefreshToken()
     {
         Request.Cookies.TryGetValue("jwt", out var token);
-        var validationResult = jwtService.ValidateToken(token!);
-        if (validationResult.IsFailure)
-        {
-            return BadRequest(Error.Unauthorized.ToDescriptionString());
-        } 
-        var claimsPrincipal = validationResult.Data;
-        if (claimsPrincipal == null)
-        {
-            return StatusCode(500, Error.Internal.ToDescriptionString());
-        }
+        var claimsPrincipal = HttpContext.User;
         var username = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
         var userFetchResult = await userService.GetByName(username!.Value);
         if (userFetchResult.IsFailure)

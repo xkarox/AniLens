@@ -26,7 +26,7 @@ public class UserController(IUserService userService) : CrudController<UserDto, 
             : NotFound(result.Error);
     }
     
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin,Moderator")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public override async Task<ActionResult<IEnumerable<UserDto>>> GetAll()

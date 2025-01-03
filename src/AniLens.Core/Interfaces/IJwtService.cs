@@ -8,5 +8,5 @@ namespace AniLens.Core.Interfaces;
 public interface IJwtService
 {
     Result<AuthResponseDto> GenerateToken(LoginDto user);
-    Result<ClaimsPrincipal> ValidateToken(string token);
+    // Result<ClaimsPrincipal> ValidateToken(string token);
 }

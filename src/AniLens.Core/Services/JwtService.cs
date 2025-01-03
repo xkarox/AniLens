@@ -23,7 +23,7 @@ public class JwtService : IJwtService
         _configuration = configuration;
         _tokenHandler = new JwtSecurityTokenHandler();
 
-        var signingCredentials = GetSigningCredentials();
+        var signingCredentials = GetSigningCredentials(_configuration);
         var securityKey = ((SymmetricSecurityKey)signingCredentials.Key);
             
         _validationParameters = new TokenValidationParameters
@@ -51,7 +51,7 @@ public class JwtService : IJwtService
     {
         try
         {
-            var credentials = GetSigningCredentials();
+            var credentials = GetSigningCredentials(_configuration);
 
             var claims = new List<Claim>
             {
@@ -90,41 +90,41 @@ public class JwtService : IJwtService
         
     }
 
-    public Result<ClaimsPrincipal> ValidateToken(string token)
-    {
-        try
-        {
-            var principal = _tokenHandler.ValidateToken(token, _validationParameters, out var validatedToken);
-
-            if (validatedToken is JwtSecurityToken jwtToken)
-            {
-                var hasValidSecurityAlgorithm = jwtToken.Header.Alg.Equals(
-                    SecurityAlgorithms.HmacSha256, 
-                    StringComparison.InvariantCultureIgnoreCase);
-
-                if (!hasValidSecurityAlgorithm)
-                    return Result<ClaimsPrincipal>.Failure("Invalid token algorithm", Error.Unauthorized);
-            }
-
-            return Result<ClaimsPrincipal>.Success(principal);
-        }
-        catch (SecurityTokenExpiredException)
-        {
-            return Result<ClaimsPrincipal>.Failure("Token has expired", Error.Unauthorized);
-        }
-        catch (SecurityTokenInvalidSignatureException)
-        {
-            return Result<ClaimsPrincipal>.Failure("Token has invalid signature", Error.Unauthorized);
-        }
-        catch (Exception ex)
-        {
-            return Result<ClaimsPrincipal>.Failure($"Token validation failed: {ex.Message}", Error.Unauthorized);
-        }
-    }
+    // public Result<ClaimsPrincipal> ValidateToken(string token)
+    // {
+    //     try
+    //     {
+    //         var principal = _tokenHandler.ValidateToken(token, _validationParameters, out var validatedToken);
+    //
+    //         if (validatedToken is JwtSecurityToken jwtToken)
+    //         {
+    //             var hasValidSecurityAlgorithm = jwtToken.Header.Alg.Equals(
+    //                 SecurityAlgorithms.HmacSha256, 
+    //                 StringComparison.InvariantCultureIgnoreCase);
+    //
+    //             if (!hasValidSecurityAlgorithm)
+    //                 return Result<ClaimsPrincipal>.Failure("Invalid token algorithm", Error.Unauthorized);
+    //         }
+    //
+    //         return Result<ClaimsPrincipal>.Success(principal);
+    //     }
+    //     catch (SecurityTokenExpiredException)
+    //     {
+    //         return Result<ClaimsPrincipal>.Failure("Token has expired", Error.Unauthorized);
+    //     }
+    //     catch (SecurityTokenInvalidSignatureException)
+    //     {
+    //         return Result<ClaimsPrincipal>.Failure("Token has invalid signature", Error.Unauthorized);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return Result<ClaimsPrincipal>.Failure($"Token validation failed: {ex.Message}", Error.Unauthorized);
+    //     }
+    // }
     
-    private SigningCredentials GetSigningCredentials()
+    private SigningCredentials GetSigningCredentials(IConfiguration config)
     {
-        var secretKey = _configuration["JwtSettings:SecretKey"] 
+        var secretKey = config["JwtSettings:SecretKey"] 
                 ?? throw new InvalidOperationException("JWT secret key not configured");
         
         if (string.IsNullOrEmpty(secretKey) || Encoding.UTF8.GetBytes(secretKey).Length < 32)

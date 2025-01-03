@@ -8,6 +8,11 @@ public class HashService : IHashService
 {
     public Result<string> HashPassword(string password)
     {
+        if (string.IsNullOrEmpty(password) ||
+            string.IsNullOrWhiteSpace(password))
+            return Result<string>.Failure(Error.Parameter
+                .ToDescriptionString());
+        
         var salt = BCryptHelper.GenerateSalt();
         var hashedPassword = BCryptHelper.HashPassword(password, salt);
 
@@ -18,6 +23,14 @@ public class HashService : IHashService
 
     public bool CheckPassword(string password, string hashedPassword)
     {
+        if (string.IsNullOrEmpty(password) ||
+            string.IsNullOrWhiteSpace(password))
+            return false;
+        if (string.IsNullOrEmpty(hashedPassword) ||
+            string.IsNullOrWhiteSpace(hashedPassword) || 
+            hashedPassword.Length != 60)
+            return false;
+        
         return BCryptHelper.CheckPassword(password, hashedPassword);
     }
 }

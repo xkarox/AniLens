@@ -31,6 +31,6 @@ public static class UserExtension
     {
         ArgumentNullException.ThrowIfNull(user);
         
-        return user.ToDto().ToLogin(user.PasswordHash ?? "");
+        return user.ToDto().ToLogin(user.PasswordHash ?? string.Empty);
     }
 }
