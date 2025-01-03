@@ -31,6 +31,6 @@ public class HashService : IHashService
             hashedPassword.Length != 60)
             return false;
         
-        return BCryptHelper.CheckPassword(password, hashedPassword);
+        return !BCryptHelper.CheckPassword(password, hashedPassword);
     }
 }

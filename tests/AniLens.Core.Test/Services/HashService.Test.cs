@@ -61,13 +61,13 @@ public class HashService_Test
     }
 
     [Fact]
-    public void CheckPassword_NullPassword_ThrowsArgumentNullException()
+    public void CheckPassword_NullPassword_ReturnsFalse()
     {
         Assert.False(_hashService.CheckPassword(null, "hashedPassword"));
     }
 
     [Fact]
-    public void CheckPassword_NullHashedPassword_ThrowsArgumentNullException()
+    public void CheckPassword_NullHashedPassword_ReturnsFalse()
     {
         Assert.False(_hashService.CheckPassword("password", null));
     }
