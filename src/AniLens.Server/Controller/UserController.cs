@@ -1,45 +1,52 @@
+using AniLens.Core.Extensions;
+using AniLens.Core.Interfaces;
 using AniLens.Core.Models;
-using AniLens.Server.Services;
+using AniLens.Core.Services;
+using AniLens.Server.Controller.Base;
+using AniLens.Server.Filter;
 using AniLens.Shared;
+using AniLens.Shared.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Extensions;
 
 namespace AniLens.Server.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(UserService userService) : BaseController<User>
+public class UserController(IUserService userService) : CrudController<UserDto, UpdateUserDto>
 {
-    private readonly UserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-
-    [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public override async Task<IActionResult> Get(string id)
+    public override async Task<ActionResult<UserDto>> Get(string id)
     {
-        var result = await _userService.Get(id);
+        var result = await userService.Get(id);
         return result.IsSuccess
-            ? Ok(result.Data)
+            ? Ok(result.Data!)
             : NotFound(result.Error);
     }
     
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
+    [Authorize(Roles = "Admin,Moderator")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public override async Task<IActionResult> GetAll()
+    public override async Task<ActionResult<IEnumerable<UserDto>>> GetAll([FromQuery] int page, [FromQuery] int pageSize)
     {
-        var result = await _userService.GetAll();
+        var result = await userService.GetAll(page, pageSize);
         return result.IsSuccess 
-            ? Ok(result.Data)
+            ? Ok(result.Data!)
             : StatusCode(StatusCodes.Status500InternalServerError, result.Error);
     }
     
-    [HttpPut]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+    [Authorize]
+    [ValidateUpdateUserDto]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateUserDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public override async Task<IActionResult> Update([FromBody] User user)
+    public override async Task<ActionResult<UpdateUserDto>> Update(string id, [FromBody]UpdateUserDto user)
     {
-        var result = await _userService.UpdateUser(user);
+        var result = await userService.UpdateUser(id, user);
         return result switch
         {
             { IsSuccess: true } => Ok(result.Data),
@@ -48,14 +55,14 @@ public class UserController(UserService userService) : BaseController<User>
         };
     }
     
-    [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public override async Task<IActionResult> Delete(string id)
+    public override async Task<ActionResult> Delete(string id)
     {
-        var result = await _userService.DeleteUser(id);
+        var result = await userService.DeleteUser(id);
         return result switch
         {
             { IsSuccess: true } => Ok(),
@@ -65,14 +72,15 @@ public class UserController(UserService userService) : BaseController<User>
         };
     }
     
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(User))]
+    [Authorize(Roles = "Admin, Moderator")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public override async Task<IActionResult> Add([FromBody] User user)
+    public override async Task<ActionResult<UserDto>> Add([FromBody] UserDto user)
     {
-        var result = await _userService.AddUser(user);
+        var result = await userService.AddUser(user);
         return result.IsSuccess
-            ? CreatedAtAction(nameof(Get), new { id = user.Id }, user)
+            ? CreatedAtAction(nameof(Get), new { id = result.Data!.Id }, result.Data!)
             : StatusCode(StatusCodes.Status500InternalServerError, result.Error);
     }
 }
