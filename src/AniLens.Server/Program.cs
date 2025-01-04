@@ -74,6 +74,7 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddScoped<IValidator<RegisterDto>, RegistrationValidator>();
+builder.Services.AddScoped<IValidator<UpdateUserDto>, UpdateUserValidator>();
 
 builder.Services.AddControllers();
 

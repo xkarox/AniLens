@@ -13,8 +13,9 @@ namespace AniLens.Core.Services;
 public class UserService : IUserService
 {
     private readonly IMongoCollection<User> _userCollection;
+    private readonly IHashService _hashService;
     
-    public UserService(IOptions<UserDbSettings> userDbSettings)
+    public UserService(IOptions<UserDbSettings> userDbSettings, IHashService hashService)
     {
         Debug.Assert(userDbSettings != null, nameof(userDbSettings) + " != null");
         var mongoSettings = userDbSettings.Value;
@@ -22,6 +23,8 @@ public class UserService : IUserService
         var database = client.GetDatabase(mongoSettings.DatabaseName);
         _userCollection = database.GetCollection<User>(mongoSettings
             .CollectionName);
+
+        _hashService = hashService;
     }
 
     public async Task<Result<IEnumerable<UserDto>>> GetAll(int page = 1, int pageSize = 10)
@@ -76,7 +79,7 @@ public class UserService : IUserService
 
             var filter =
                 Builders<User>.Filter.Eq(user => user.Username, 
-                    new MongoDB.Bson.BsonRegularExpression($"^{username}$", "i"));
+                    username);
             var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
 
             return user != null
@@ -162,6 +165,13 @@ public class UserService : IUserService
             
             if (!string.IsNullOrEmpty(user.Username))
                 foundUser.Username = user.Username;
+            if (!string.IsNullOrEmpty(user.Password))
+            {
+                var hashResult = _hashService.HashPassword(user.Password);
+                foundUser.PasswordHash = hashResult.IsSuccess
+                    ? hashResult.Data
+                    : foundUser.PasswordHash;
+            }
             if (!string.IsNullOrEmpty(user.Email))
                 foundUser.Email = user.Email;
         

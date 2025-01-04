@@ -3,6 +3,7 @@ using AniLens.Core.Interfaces;
 using AniLens.Core.Models;
 using AniLens.Core.Services;
 using AniLens.Server.Controller.Base;
+using AniLens.Server.Filter;
 using AniLens.Shared;
 using AniLens.Shared.DTO;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,7 @@ public class UserController(IUserService userService) : CrudController<UserDto, 
     }
     
     [Authorize]
+    [ValidateUpdateUserDto]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateUserDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
