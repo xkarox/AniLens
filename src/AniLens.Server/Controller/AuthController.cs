@@ -50,6 +50,21 @@ public class AuthController(IJwtService jwtService,
         
         return Ok(user.ToDto());
     }
+    
+    [Authorize]
+    [HttpPost("logout")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict
+        });
+        return Ok();
+    }
+
 
     [AllowAnonymous]
     [ValidateRegisterDto]
