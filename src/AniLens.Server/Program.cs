@@ -55,6 +55,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AuthPolicy", policyBuilder =>
+    {
+        policyBuilder
+            .WithOrigins("http://localhost:*")
+            // .AllowCredentials()
+            .WithHeaders("Authorization", "Content-Type")
+            .WithMethods("POST", "PUT", "UPDATE", "DELETE", "GET");
+    });
+});
+
+
 
 builder.Services.Configure<UserDbSettings>(builder.Configuration.GetSection("MongoDBUser"));
 builder.Services.AddSingleton<IJwtService, JwtService>();
@@ -81,6 +94,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 });
 
 app.UseHttpsRedirection();
+app.UseCors("AuthPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
