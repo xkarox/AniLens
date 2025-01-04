@@ -103,6 +103,9 @@ public class UserService : IUserService
     {
         try
         {
+            if (await UsernameTaken(user.Username))
+                return Result<UserDto>.Failure("Username already taken",
+                    Error.UserTaken);
             var userModel = user.ToUser();
             userModel.Id = null;
             userModel.CreatedAt = DateTime.UtcNow;
