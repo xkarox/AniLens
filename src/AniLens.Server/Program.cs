@@ -6,6 +6,7 @@ using AniLens.Server.Settings;
 using AniLens.Server.Validators;
 using AniLens.Shared.DTO;
 using FluentValidation;
+using MangaDexSharp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.IdentityModel.Tokens;
@@ -73,6 +74,9 @@ builder.Services.Configure<UserDbSettings>(builder.Configuration.GetSection("Mon
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IHashService, HashService>();
+builder.Services.AddMangaDex();
+builder.Services.AddScoped<IMangaInfoService, MangaInfoService>();
+// builder.Services.AddScoped<IMangaListService, MangaListService>();
 builder.Services.AddScoped<IValidator<RegisterDto>, RegistrationValidator>();
 builder.Services.AddScoped<IValidator<UpdateUserDto>, UpdateUserValidator>();
 
