@@ -6,7 +6,7 @@ namespace AniLens.Core.Interfaces;
 
 public interface IUserService
 {
-    public Task<Result<IEnumerable<UserDto>>> GetAll();
+    public Task<Result<IEnumerable<UserDto>>> GetAll(int page, int pageSize);
     public Task<Result<UserDto>> Get(string id);
     public Task<Result<User>> GetByName(string username);
     public Task<Result<UserDto>> AddUser(UserDto user);

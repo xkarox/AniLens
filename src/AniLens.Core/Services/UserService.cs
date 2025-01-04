@@ -24,11 +24,13 @@ public class UserService : IUserService
             .CollectionName);
     }
 
-    public async Task<Result<IEnumerable<UserDto>>> GetAll()
+    public async Task<Result<IEnumerable<UserDto>>> GetAll(int page = 1, int pageSize = 10)
     {
         try
         {
             var users = await _userCollection.Find(_ => true)
+                .Skip((page - 1) * pageSize)
+                .Limit(pageSize)
                 .ToListAsync();
             return Result<IEnumerable<UserDto>>.Success(users.ToDto());
         }

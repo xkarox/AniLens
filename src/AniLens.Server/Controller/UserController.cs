@@ -29,9 +29,9 @@ public class UserController(IUserService userService) : CrudController<UserDto, 
     [Authorize(Roles = "Admin,Moderator")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public override async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
+    public override async Task<ActionResult<IEnumerable<UserDto>>> GetAll([FromQuery] int page, [FromQuery] int pageSize)
     {
-        var result = await userService.GetAll();
+        var result = await userService.GetAll(page, pageSize);
         return result.IsSuccess 
             ? Ok(result.Data!)
             : StatusCode(StatusCodes.Status500InternalServerError, result.Error);
