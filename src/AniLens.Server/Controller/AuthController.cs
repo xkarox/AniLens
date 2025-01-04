@@ -75,15 +75,6 @@ public class AuthController(IJwtService jwtService,
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
     {
-        if (await userService.UsernameTaken(registerDto.Username))
-            return BadRequest(Error.UserTaken.ToDescriptionString());
-        
-        var hashPasswordResult = hashService.HashPassword(registerDto.Password);
-        if (hashPasswordResult.IsFailure)
-            return StatusCode(500, Error.Internal.ToDescriptionString());
-
-        registerDto.Password = hashPasswordResult.Data!;
-        
         var userFetchResult = await userService.AddUser(registerDto);
         if (userFetchResult.IsFailure)
         {

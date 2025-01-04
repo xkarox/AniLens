@@ -121,7 +121,18 @@ public class UserService : IUserService
     {
         try
         {
+            if (await UsernameTaken(user.Username))
+                return Result<UserDto>.Failure("Username already taken",
+                    Error.UserTaken);
+            var hashResult = _hashService.HashPassword(user.Password);
+            if (hashResult.IsFailure)
+                return Result<UserDto>.Failure("Failed to hash password",
+                    Error.Internal);
+            user.Password = hashResult.Data!;
+            
             var userModel = user.ToUser();
+            userModel.CreatedAt = DateTime.UtcNow;
+            userModel.UpdatedAt = DateTime.UtcNow;
             await _userCollection.InsertOneAsync(userModel);
             return Result<UserDto>.Success(userModel.ToDto());
         }
