@@ -75,7 +75,8 @@ public class UserService : IUserService
             }
 
             var filter =
-                Builders<User>.Filter.Eq(user => user.Username, username);
+                Builders<User>.Filter.Eq(user => user.Username, 
+                    new MongoDB.Bson.BsonRegularExpression($"^{username}$", "i"));
             var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
 
             return user != null
@@ -84,9 +85,14 @@ public class UserService : IUserService
                     $"User with Username {username} not found",
                     Error.NotFound);
         }
-        catch
+        catch (MongoException ex)
         {
-            return Result<User>.Failure(Error.Internal.ToDescriptionString(),
+            return Result<User>.Failure($"Database error: {ex.Message}",
+                Error.Internal);
+        }
+        catch (Exception ex)
+        {
+            return Result<User>.Failure($"Unexpected error: {ex.Message}",
                 Error.Internal);
         }
     }
