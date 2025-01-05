@@ -2,6 +2,7 @@
 using System.Text;
 using AniLens.Core.Interfaces;
 using AniLens.Core.Services;
+using AniLens.Core.Settings;
 using AniLens.Server.Settings;
 using AniLens.Server.Validators;
 using AniLens.Shared.DTO;
@@ -71,11 +72,14 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.Configure<UserDbSettings>(builder.Configuration.GetSection("MongoDBUser"));
+builder.Services.Configure<MangaListDbSettings>(
+    builder.Configuration.GetSection("MongoDBMangaList"));
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddMangaDex();
 builder.Services.AddScoped<IMangaInfoService, MangaInfoService>();
+builder.Services.AddScoped<IMangaListService, MangaListService>();
 // builder.Services.AddScoped<IMangaListService, MangaListService>();
 builder.Services.AddScoped<IValidator<RegisterDto>, RegistrationValidator>();
 builder.Services.AddScoped<IValidator<UpdateUserDto>, UpdateUserValidator>();

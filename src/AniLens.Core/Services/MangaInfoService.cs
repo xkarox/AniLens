@@ -1,6 +1,8 @@
 using System.Text;
+using AniLens.Core.Extensions;
 using AniLens.Core.Interfaces;
 using AniLens.Shared;
+using AniLens.Shared.DTO;
 using MangaDexSharp;
 using Microsoft.Extensions.Configuration;
 using Manga = AniLens.Core.Models.Manga;
@@ -11,7 +13,7 @@ public class MangaInfoService(IMangaDex mangaDexService) : IMangaInfoService
 {
     private readonly IMangaDex _mangaDexService = mangaDexService;
 
-    public async Task<Result<IEnumerable<Manga>>> Search(string query)
+    public async Task<Result<IEnumerable<MangaDto>>> Search(string query)
     {
         MangaIncludes[] includes = [MangaIncludes.manga, MangaIncludes.cover_art];
         var result = await mangaDexService.Manga.List(
@@ -22,9 +24,9 @@ public class MangaInfoService(IMangaDex mangaDexService) : IMangaInfoService
                 Offset = 0,
             });
         if(result.ErrorOccurred)
-            return Result<IEnumerable<Manga>>.Failure("MangaDex related Error occurred", Error.Internal);
+            return Result<IEnumerable<MangaDto>>.Failure("MangaDex related Error occurred", Error.Internal);
         var data = result.Data;
-        var mangaResult = new List<Manga>();
+        var mangaResult = new List<MangaDto>();
         data.ForEach(entry =>
         {
             var tmp = new Manga
@@ -51,13 +53,13 @@ public class MangaInfoService(IMangaDex mangaDexService) : IMangaInfoService
                     .Append(entry.Id).Append("/")
                     .Append(coverFileName).ToString();
             
-            mangaResult.Add(tmp);
+            mangaResult.Add(tmp.ToDto());
         });
         
-        return Result<IEnumerable<Manga>>.Success(mangaResult);
+        return Result<IEnumerable<MangaDto>>.Success(mangaResult);
     }
 
-    public Task<Result<IEnumerable<Manga>>> Get(int page, int pageSize)
+    public Task<Result<IEnumerable<MangaDto>>> Get(int page, int pageSize)
     {
         throw new NotImplementedException();
     }
