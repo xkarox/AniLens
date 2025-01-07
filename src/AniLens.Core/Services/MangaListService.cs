@@ -98,7 +98,7 @@ public class MangaListService : IMangaListService
             filter &= builder.Gte(x => x.UpdatedAt, query.UpdatedAtStart.Value);
         
         if (query.UpdatedAtEnd.HasValue)
-            filter &= builder.Gte(x => x.UpdatedAt, query.UpdatedAtEnd.Value);
+            filter &= builder.Lte(x => x.UpdatedAt, query.UpdatedAtEnd.Value);
 
         if (query.Content?.Any() == true)
         {
