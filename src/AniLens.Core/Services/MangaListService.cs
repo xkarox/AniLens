@@ -32,7 +32,7 @@ public class MangaListService : IMangaListService
         {
             var mangaList = new MangaList()
             {
-                Title = string.IsNullOrEmpty(title) ? title : "New List",
+                Title = string.IsNullOrEmpty(title) ? "New List" : title,
                 Visibility = visibility,
                 Content = content.Select(manga => manga.ToManga()),
                 Curators = curators.Select(user => user.ToUser()),
