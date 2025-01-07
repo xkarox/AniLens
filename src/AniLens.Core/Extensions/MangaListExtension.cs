@@ -16,7 +16,7 @@ public static class MangaListExtension
             Content = mangaList.Content.Select(manga => manga.ToDto()),
             Curators = mangaList.Curators.Select(curator => curator.ToDto()),
             Subscriber = mangaList.Subscriber.Select(subscriber => subscriber.ToDto()),
-            Owner = mangaList.Owner.ToDto(),
+            Owner = mangaList.Owner?.ToDto(),
             CreatedAt = mangaList.CreatedAt,
             UpdatedAt = mangaList.UpdatedAt
         };
