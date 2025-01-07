@@ -32,12 +32,14 @@ public class MangaInfoService(IMangaDex mangaDexService) : IMangaInfoService
             var tmp = new Manga
             {
                 Id = entry.Id,
-                Title = entry.Attributes.Title["en"],
-                OriginalLanguage = entry.Attributes.OriginalLanguage,
-                LastVolume = entry.Attributes.LastVolume,
-                LastChapter = entry.Attributes.LastChapter,
-                Status = entry.Attributes.Status.ToString() ?? string.Empty,
-                Year = entry.Attributes.Year ?? 0
+                Title = entry.Attributes?.Title.GetValueOrDefault("en") 
+                        ?? entry.Attributes?.Title.FirstOrDefault().Value 
+                        ?? "Unknown Title",
+                OriginalLanguage = entry.Attributes?.OriginalLanguage ?? "Unknown",
+                LastVolume = entry.Attributes?.LastVolume ?? "Unknown",
+                LastChapter = entry.Attributes?.LastChapter ?? "Unknown",
+                Status = entry.Attributes?.Status.ToString() ?? string.Empty,
+                Year = entry.Attributes?.Year ?? 0
                 
             };
             if (entry.Attributes.Description.TryGetValue("en", out var desc))
