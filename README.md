@@ -5,8 +5,8 @@ AniLens is a modern web application for tracking, organizing, and rating anime a
 ## Features (to be implemented)
 
 ### Core Functionality
-- Personal library management for anime and manga
-- Progress tracking for episodes and chapters
+- Personal library management for (anime and) manga
+- Progress tracking for (episodes and) chapters
 - Rating and review system
 - Custom list creation and organization
 - Advanced search and filtering capabilities
@@ -16,7 +16,6 @@ AniLens is a modern web application for tracking, organizing, and rating anime a
 ### Technical Highlights
 - Blazor WebAssembly frontend
 - ASP.NET Core backend
-- Entity Framework Core for data management
 - JWT authentication
 - (Real-time updates using SignalR)
 - External API integration
@@ -30,8 +29,7 @@ AniLens is a modern web application for tracking, organizing, and rating anime a
 
 ### Backend
 - ASP.NET Core 8
-- Entity Framework Core
-- MongoDB/MariaDB (we'll see...)
+- MongoDB
 
 ## Project Structure
 
@@ -43,7 +41,9 @@ AniLens/
 │   ├── AniLens.Shared/          # Shared models and interfaces
 │   └── AniLens.Core/            # Core business logic
 ├── tests/
-│   ├── AniLens.UnitTests/
+│   ├── AniLens.Client.Test/
+│   ├── AniLens.Core.Test/
+│   ├── AniLens.Server.Test/
 │   └── AniLens.IntegrationTests/
 └── docs/                        # Documentation
 ```
