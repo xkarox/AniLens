@@ -25,19 +25,18 @@ public class MangaListService : IMangaListService
             database.GetCollection<MangaList>(mongoSettings.CollectionName);
     }
     
-    public async Task<Result<MangaListDto>> CreateList(string title, Visibility visibility, IEnumerable<MangaDto> content,
-        IEnumerable<UserDto> curators, IEnumerable<UserDto> subscriber, UserDto owner)
+    public async Task<Result<MangaListDto>> CreateList(MangaListDto item)
     {
         try
         {
             var mangaList = new MangaList()
             {
-                Title = string.IsNullOrEmpty(title) ? "New List" : title,
-                Visibility = visibility,
-                Content = content.Select(manga => manga.ToManga()),
-                Curators = curators.Select(user => user.ToUser()),
-                Subscriber = subscriber.Select(user => user.ToUser()),
-                Owner = owner.ToUser()
+                Title = string.IsNullOrEmpty(item.Title) ? "New List" : item.Title,
+                Visibility = item.Visibility,
+                Content = item.Content.Select(manga => manga.ToManga()),
+                Curators = item.Curators.Select(user => user.ToUser()),
+                Subscriber = item.Subscriber.Select(user => user.ToUser()),
+                Owner = item.Owner?.ToUser()
             };
             await _mangaListCollection.InsertOneAsync(mangaList);
             return Result<MangaListDto>.Success(mangaList.ToDto());
@@ -124,12 +123,15 @@ public class MangaListService : IMangaListService
         return filter;
     }
 
-    public async Task<Result<IEnumerable<MangaListDto>>> Query(MangaListQueryDto query)
+    public async Task<Result<IEnumerable<MangaListDto>>> Query(MangaListQueryDto query, int page, int pageSize)
     {
         try
         {
             var filter = CreateFilter(query);
-            var result = await _mangaListCollection.Find(filter).ToListAsync();
+            var result = await _mangaListCollection.Find(filter)
+                .Skip((page - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync();
 
             return result != null
                 ? Result<IEnumerable<MangaListDto>>.Success(
@@ -141,26 +143,6 @@ public class MangaListService : IMangaListService
         {
             return Result<IEnumerable<MangaListDto>>.Failure(
                 "Failed to run query", Error.Internal);
-        }
-    }
-
-    public async Task<Result<IEnumerable<MangaListDto>>> GetLists(UserDto user)
-    {
-        try
-        {
-            var list = await _mangaListCollection.Find(mangaList => mangaList.Owner!.Id == user.Id).ToListAsync();
-
-            return list != null
-                ? Result<IEnumerable<MangaListDto>>.Success(list.Select(mangaList => mangaList.ToDto()))
-                : Result<IEnumerable<MangaListDto>>.Failure(
-                    $"No Lists found for user {user.Username} with ID {user.Id}",
-                    Error.NotFound);
-        }
-        catch (Exception ex)
-        {
-            return Result<IEnumerable<MangaListDto>>.Failure(
-                $"Failed to retrieve list: {ex.Message}",
-                Error.Internal);
         }
     }
 

@@ -23,23 +23,52 @@ public class MangaListController(IMangaListService mangaListService) : CrudContr
             : NotFound(result.Error);
     }
 
-    public override Task<ActionResult<IEnumerable<MangaListDto>>> GetAll(int page, int pageSize)
+    public override async Task<ActionResult<IEnumerable<MangaListDto>>> GetAll([FromQuery]int page = 1, [FromQuery]int pageSize = 20)
     {
-        throw new NotImplementedException();
+        var query = new MangaListQueryDto();
+        var result = await mangaListService.Query(query, page, pageSize);
+        
+        return result.IsSuccess 
+            ? Ok(result.Data!)
+            : StatusCode(StatusCodes.Status500InternalServerError,
+                Error.Internal.ToDescriptionString());
     }
 
-    public override Task<ActionResult<MangaListDto>> Update(string id, MangaListDto item)
+    public override async Task<ActionResult<MangaListDto>> Update(string id, [FromBody] MangaListDto item)
     {
-        throw new NotImplementedException();
+        var result = await mangaListService.UpdateList(item);
+        return result switch
+        {
+            { IsSuccess: true } => Ok(result.Data!),
+            { ErrorType: Error.NotFound } => NotFound(),
+            { ErrorType: Error.Internal } => StatusCode(
+                StatusCodes.Status500InternalServerError,
+                Error.Internal.ToDescriptionString())
+        };
     }
 
-    public override Task<ActionResult> Delete(string id)
+    public override async Task<ActionResult> Delete([FromQuery] string id)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(id))
+            return BadRequest(Error.Parameter.ToDescriptionString());
+        
+        var result = await mangaListService.DeleteList(id);
+        return result switch
+        {
+            { IsSuccess: true } => Ok(result.Data!),
+            { ErrorType: Error.NotFound } => NotFound(),
+            { ErrorType: Error.Internal } => StatusCode(
+                StatusCodes.Status500InternalServerError,
+                Error.Internal.ToDescriptionString())
+        };
     }
 
-    public override Task<ActionResult<MangaListDto>> Add(MangaListDto item)
+    public override async Task<ActionResult<MangaListDto>> Add([FromBody] MangaListDto item)
     {
-        throw new NotImplementedException();
+        var result = await mangaListService.CreateList(item);
+        return result.IsSuccess
+            ? Ok(result.Data!)
+            : StatusCode(StatusCodes.Status500InternalServerError,
+                Error.Internal.ToDescriptionString());
     }
 }
