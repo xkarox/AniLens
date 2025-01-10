@@ -16,7 +16,7 @@ public abstract class CrudController<TDto, TUpdateDto>(
     public abstract Task<ActionResult<TDto>> Get(string id);
 
     [HttpGet]
-    public abstract Task<ActionResult<IEnumerable<TDto>>> GetAll(int page, int pageSize);
+    public abstract Task<ActionResult<IEnumerable<TDto>>> GetAll(int page = 1, int pageSize = 20);
 
     [HttpPut("{id}")]
     public abstract Task<ActionResult<TUpdateDto>> Update(string id, [FromBody]TUpdateDto item);

@@ -2,6 +2,7 @@ using AniLens.Core.Models;
 using AniLens.Shared;
 using AniLens.Shared.DTO;
 using AniLens.Shared.DTO.Base;
+using Mapster;
 
 namespace AniLens.Core.Extensions;
 
@@ -44,5 +45,11 @@ public static class DtoExtension
             Password = password,
             Roles = userDto.Roles
         };
+    }
+
+    public static Manga ToManga(this MangaDto mangaDto)
+    {
+        ArgumentNullException.ThrowIfNull(mangaDto);
+        return mangaDto.Adapt<Manga>();
     }
 }

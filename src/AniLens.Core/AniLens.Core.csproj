@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt" Version="1.0.0" />
+    <PackageReference Include="MangaDexSharp" Version="1.1.4" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.3.0" />
     <PackageReference Include="MongoDB.Bson" Version="3.1.0" />
